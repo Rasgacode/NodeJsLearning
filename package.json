@@ -1,0 +1,21 @@
+{
+  "name": "learningNodeJs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "joi": "^17.4.0",
+    "optional": "^0.1.4",
+    "systemic": "^3.3.9",
+    "systemic-domain-runner": "^1.1.0",
+    "systemic-express": "^1.1.1"
+  }
+}
