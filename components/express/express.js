@@ -1,31 +1,32 @@
-const Joi = require('joi')
-const Express = require('express')
-const app = new Express()
-
-const port = 5000
+const express = require('express')
 
 module.exports = () => {
-  const start = async ({ database }) => {
-    app.use(Express.json())  
+  const start = async ({ inMemDatabase, model }) => {
+    const app = express()
+    const port = 5000
+    app.use(express.json())
+    const { convertToGameModel, gameSchema } = model
     
     app.get('/', (req, res) => {
       res.send('You can find a lot of gametypes here!')
     })
     
     app.get('/api/gametypes', (req, res) => {
-      res.send(database.getGames())
+      gameSchema.find({}, (err, games) => {
+        res.send(games)
+      })
     })
     
     app.get('/api/gametype/:name', (req, res) => {
-      res.send(database.getGame(req.params.name) || 'no such game like this!')
+      gameSchema.findOne({ name: req.params.name }, (err, game) => {
+        res.send(err || !game ? 'no such game like this!' : game)
+      })
     })
     
     app.post('/api/add-game', (req, res) => {
-      const { value, error } = Joi.object({ name: Joi.string().min(3).required(), type: Joi.string().min(3).required() }).validate(req.body)
-      
-      if (error) return res.status(400).send(error.details[0].message)
-    
-      database.addGame({name: value.name, type: value.type})
+      const convertedData = convertToGameModel(req.body)
+      if (convertedData.error) return res.status(convertedData.status).send(convertedData.error)
+      convertedData.save()
       res.send('Your add was success!')
     })
 
